@@ -1,0 +1,55 @@
+#!/bin/sh
+
+if [ "$DISPLAY" != "" ];
+    then
+        DIALOG="Xdialog"
+else
+        DIALOG="dialog"
+    fi
+
+
+tempfile=`mktemp 2>/dev/null` || tempfile=/tmp/test$$
+trap "rm -f $tempfile" 0 1 2 5 15
+
+$DIALOG --clear --title "Установка или обновление платформ и конфигураций 1С:Предприятие" \
+        --menu "Список разделов:" 100 100 100 \
+                "1c_platform83"  "Установка или обновление платформы 1С:Предприятие 8.3" \
+                "1c_conf8" "Установка или обновление конфигураций 1С:Предприятие 8" 2> $tempfile
+        retval=$?
+
+        choice=`cat $tempfile`
+
+############################ 1C_Enterprise_update
+### menu 1C_Enterprise_update
+
+if [ "$choice" = "1c_platform83" ]; then
+
+$DIALOG --clear --title "Установка или обновление платформы 1С:Предприятие 8.3" \
+        --menu "Установка или обновление платформы 1С:Предприятие 8.3:" 100 100 100 \
+                "1c_platform83_client"  "Установка или обновление клиентской части платформы 1С:Предприятие 8.3" \
+                "1c_platform83_server"  "Установка или обновление серверной части платформы 1С:Предприятие 8.3" 2> $tempfile
+        retval=$?
+
+        choice=`cat $tempfile`
+
+
+############ end menu 1C_Enterprise_update
+
+############################ 1C_Enterprise83_update
+### menu 1C_Enterprise83_update
+
+  if [ "$choice" = "1centerprise83_update" ]; then
+
+    textfile="$pathtextfile/1centerprise83.txt"
+
+    nameprogram="1C Предприятие 8.3"
+
+    $DIALOG $OPTS --msgbox "Обновляем $nameprogram" 10 60
+    sudo layman -s linuxbuh && sudo eix-update && sudo dispatch-conf && sudo emerge app-office/1c-enterprise83-common app-office/1c-enterprise83-server app-office/1c-enterprise83-client
+    $DIALOG $OPTS --msgbox "Обновили $nameprogram" 10 60
+
+  fi
+
+
+############ end menu 1C_Enterprise83_update
+fi
