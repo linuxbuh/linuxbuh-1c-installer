@@ -539,47 +539,238 @@ echo -e "\e[1;31;42mУстановить программу?\e[0m"
 echo
 PS3='Установить программу? '
 echo
-select INSTALLPLATFORM in "Да" "Нет"
+select INSTALLPLATFORMEMERGE in "Да" "Нет"
 do
   echo
-  echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORM\e[0m"
+  echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORMEMERGE\e[0m"
   echo
   break
 done
-    if [[ -z "$INSTALLPLATFORM" ]];then
+    if [[ -z "$INSTALLPLATFORMEMERGE" ]];then
     echo  -e "\e[31mНичего не указано\e[0m"
     exit 1
     fi
 
-    if [ $INSTALLPLATFORM = "Да" ]; then
+    if [ $INSTALLPLATFORMEMERGE = "Да" ]; then
 	if [ $SERVER_CLIENT = "Клиент" ]; then
-	    echo "1c-enterprise83-client-${VERPLATFORM}"
-	    #echo $PASSWORDROOT | sudo -S emerge 
+	    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-client-${VERPLATFORM}\e[0m"
+	    echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-${VERPLATFORM}
+	    echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-nls-${VERPLATFORM}
 	fi
 	if [ $SERVER_CLIENT = "Сервер" ]; then
-	    echo "1c-enterprise83-server-${VERPLATFORM}"
-	    #echo $PASSWORDROOT | sudo -S emerge 
+        #Устанавливаем или нет Postgres
+        echo
+        echo -e "\e[1;31;42mУстановить Postgres?\e[0m"
+        echo
+        PS3='Установить Postgres? :'
+        echo
+        select INSTALLPLATFORMEMERGEPOSTGRES in "Да" "Нет"
+        do
+	    echo
+	    echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORMEMERGEPOSTGRES\e[0m"
+	    echo
+	break
+	done
+		if [[ -z "$INSTALLPLATFORMEMERGEPOSTGRES" ]];then
+	        echo  -e "\e[31mНичего не указано\e[0m"
+		exit 1
+		fi
+		if [ $INSTALLPLATFORMEMERGEPOSTGRES = "Да" ]; then
+			    echo -e "\e[1;34;4mУстанавливаем Postgres\e[0m"
+			    echo $PASSWORDROOT | sudo -S USE="server postgres" emerge =1c-enterprise83-server-${VERPLATFORM}
+			    echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-server-nls-${VERPLATFORM}
+		fi
+		if [ $INSTALLPLATFORMEMERGEPOSTGRES = "Нет" ]; then
+		        echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С , например emerge =\e[0m"
+		fi
+		    #Устанавливаем или нет WEB компоненту 1С Сервер
+		    echo
+		    echo -e "\e[1;31;42mУстановить программу?\e[0m"
+		    echo
+		    PS3='Установить WEB компоненту 1С Сервер? :'
+		    echo
+		    select INSTALLPLATFORMEMERGEWEB1C in "Да" "Нет"
+		    do
+		      echo
+		      echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORMEMERGEWEB1C\e[0m"
+		      echo
+		      break
+		    done
+			if [[ -z "$INSTALLPLATFORMEMERGEWEB1C" ]];then
+		        echo  -e "\e[31mНичего не указано\e[0m"
+			    exit 1
+		        fi
+			if [ $INSTALLPLATFORMEMERGEWEB1C = "Да" ]; then
+			    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-ws-${VERPLATFORM}\e[0m"
+			    echo $PASSWORDROOT | sudo -S USE"server" emerge =1c-enterprise83-ws-${VERPLATFORM}
+			    echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-ws-nls-${VERPLATFORM}
+			fi
+		    
+		        if [ $INSTALLPLATFORMEMERGEWEB1C = "Нет" ]; then
+		        echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С , например emerge =1c-enterprise83-ws-$VERPLATFORM\e[0m"
+		        fi
+
 	fi
     fi
 
-    if [ $INSTALLPLATFORM = "Нет" ]; then
+    if [ $INSTALLPLATFORMEMERGE = "Нет" ]; then
     echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С клиента, например emerge =1c-enterprise83-client-$VERPLATFORM или emerge =1c-enterprise83-server-$VERPLATFORM\e[0m"
     fi
 fi
 #
 
-#Если дебиан
+#Если DEB
 if [ $PAKETMANAGER = DEB ]; then
 
-echo "Это Debian"
+#Устанавливаем или нет пакеты в систему
+echo
+echo -e "\e[1;31;42mУстановить программу?\e[0m"
+echo
+PS3='Установить программу? '
+echo
+select INSTALLPLATFORMDEB in "Да" "Нет"
+do
+  echo
+  echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORMDEB\e[0m"
+  echo
+  break
+done
+    if [[ -z "$INSTALLPLATFORMDEB" ]];then
+    echo  -e "\e[31mНичего не указано\e[0m"
+    exit 1
+    fi
+
+    if [ $INSTALLPLATFORMDEB = "Да" ]; then
+	if [ $SERVER_CLIENT = "Клиент" ]; then
+	    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-client-${VERPLATFORM}\e[0m"
+	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common
+	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common-nls
+	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server
+	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server-nls
+	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-client
+	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-client-nls
+	fi
+	if [ $SERVER_CLIENT = "Сервер" ]; then
+	    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-server-${VERPLATFORM}\e[0m"
+	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common_$VERPLATFORM.$PAKETNAME
+	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common-nls_$VERPLATFORM.$PAKETNAME
+	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server_$VERPLATFORM.$PAKETNAME
+	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server-nls_${VERPLATFORM}_
+	    
+		    #Устанавливаем или нет WEB компоненту 1С Сервер
+		    echo
+		    echo -e "\e[1;31;42mУстановить программу?\e[0m"
+		    echo
+		    PS3='Установить WEB компоненту 1С Сервер? :'
+		    echo
+		    select INSTALLPLATFORMDEBWEB1C in "Да" "Нет"
+		    do
+		      echo
+		      echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORMDEBWEB1C\e[0m"
+		      echo
+		      break
+		    done
+			if [[ -z "$INSTALLPLATFORMDEBWEB1C" ]];then
+		        echo  -e "\e[31mНичего не указано\e[0m"
+			    exit 1
+		        fi
+			if [ $INSTALLPLATFORMDEBWEB1C = "Да" ]; then
+			    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-ws-${VERPLATFORM}\e[0m"
+			    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-ws
+			    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-ws-nls
+			fi
+		    
+		        if [ $INSTALLPLATFORMDEBWEB1C = "Нет" ]; then
+		        echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С клиента, например dpkg -i 1c-enterprise83-ws-$VERPLATFORM\e[0m"
+		        fi
+
+	fi
+
+    fi
+
+    if [ $INSTALLPLATFORM = "Нет" ]; then
+    echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С клиента, например dpkg -i 1c-enterprise83-client-$VERPLATFORM или dpkg -i 1c-enterprise83-server-$VERPLATFORM\e[0m"
+    fi
+
 
 fi
 
-#Если fedora
+#Если RPM
 if [ $PAKETMANAGER = RPM ]; then
 
-echo "Это Fedora"
+#Устанавливаем или нет пакеты в систему
+echo
+echo -e "\e[1;31;42mУстановить программу?\e[0m"
+echo
+PS3='Установить программу? '
+echo
+select INSTALLPLATFORMRPM in "Да" "Нет"
+do
+  echo
+  echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORMRPM\e[0m"
+  echo
+  break
+done
+    if [[ -z "$INSTALLPLATFORMRPM" ]];then
+    echo  -e "\e[31mНичего не указано\e[0m"
+    exit 1
+    fi
 
+    if [ $INSTALLPLATFORMRPM = "Да" ]; then
+	if [ $SERVER_CLIENT = "Клиент" ]; then
+	    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-client-${VERPLATFORM}\e[0m"
+	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common
+	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common-nls
+	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server
+	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server-nls
+	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-client
+	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-client-nls
+	fi
+	if [ $SERVER_CLIENT = "Сервер" ]; then
+	    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-server-${VERPLATFORM}\e[0m"
+	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common
+	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common-nls
+	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server
+	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server-nls
+	    
+		    #Устанавливаем или нет WEB компоненту 1С Сервер
+		    echo
+		    echo -e "\e[1;31;42mУстановить WEB компоненту 1С Сервер?\e[0m"
+		    echo
+		    PS3='Установить WEB компоненту 1С Сервер? :'
+		    echo
+		    select INSTALLPLATFORMRPMWEB1C in "Да" "Нет"
+		    do
+		      echo
+		      echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORMRPMWEB1C\e[0m"
+		      echo
+		      break
+		    done
+			if [[ -z "$INSTALLPLATFORMRPMWEB1C" ]];then
+		        echo  -e "\e[31mНичего не указано\e[0m"
+			    exit 1
+		        fi
+			#
+			if [ $INSTALLPLATFORMRPMWEB1C = "Да" ]; then
+			    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-ws-${VERPLATFORM}\e[0m"
+			    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-ws
+			    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-ws-nls
+			fi
+			#
+		        if [ $INSTALLPLATFORMRPMBWEB1C = "Нет" ]; then
+		        echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С клиента, например yum -y 1c-enterprise83-ws-$VERPLATFORM\e[0m"
+		        fi
+			#
+	fi
+	#
+    fi
+    #
+    if [ $INSTALLPLATFORMRPM = "Нет" ]; then
+    echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С клиента, например yum -y 1c-enterprise83-client-$VERPLATFORM или yum -y 1c-enterprise83-server-$VERPLATFORM\e[0m"
+    fi
+    #
+fi
+#
 fi
 #
 
