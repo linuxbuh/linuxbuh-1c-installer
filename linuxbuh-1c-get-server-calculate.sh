@@ -167,6 +167,6 @@ echo "Перемещаем tar.gz в папку /var/calculate/remote/distfiles"
 mv /tmp/dist1c/*.tar.gz /var/calculate/remote/distfiles
 
 #удаляем папку
-rm -R /tmp/dist1c
+#rm -R /tmp/dist1c
 
 echo "Теперь выполните комманду по установке 1С клиента, например emerge 1c-enterprise83-client-$VER"

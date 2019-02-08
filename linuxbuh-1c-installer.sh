@@ -824,10 +824,15 @@ if [ $DELFILESVIBORPLATFORM = "Нет" ]; then
     fi
 
     if [ $COPYFILESVIBORPLATFORM = "Да" ]; then
-        mkdir ~/1C_arhiv
-        cp -R $UPLOADDIRPLATFORM ~/1C_arhiv/Platform-$VERPLATFORM
+        read -i "~/1C_arhiv/Platform-$VERPLATFORM" -p "Введите путь для сохранения или оставте текущий: " -e COPYPATHPLATFORM
+#	echo
+#	echo -n "Введите путь для сохранения нажмите [ENTER]: "
+#	read USERNAME
+        mkdir $COPYPATHPLATFORM
+        cp -R $UPLOADDIRPLATFORM $COPYPATHPLATFORM
         rm -R $UPLOADDIRPLATFORM
-        echo "Все скачанные файлы скопированы в папку пользователя в каталог /1C_arhiv/Platform-$VERPLATFORM"
+        echo "Все скачанные файлы скопированы в папку пользователя в каталог $COPYPATHPLATFORM"
+
         exit 0
     fi
 
