@@ -771,8 +771,6 @@ done
     #
 fi
 #
-fi
-#
 
 #Удалить файлы платформы или нет
 echo
@@ -1174,16 +1172,16 @@ echo
 echo -e "\e[1;33;4;44mРаспаковываем exe файл\e[0m"
 echo
 cd $UPLOADDIRCONF
-unrar e $CONF_$VERCONF4.exe
-rm $CONF_$VERCONF4.exe
+unrar e $UPLOADDIRCONF/${CONF}_${VERCONF4}.exe
+rm $UPLOADDIRCONF/${CONF}_${VERCONF4}.exe
 
 #Запускаем установщик
 echo
 echo -e "\e[1;33;4;44mЗапускаем установщик\e[0m"
 echo
-
-chmod 777 setup
-sh setup
+cd $UPLOADDIRCONF
+chmod 777 $UPLOADDIRCONF/setup
+sh $UPLOADDIRCONF/setup
 
 #Удалить файлы или нет
 echo
