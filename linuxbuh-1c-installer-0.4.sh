@@ -5,10 +5,10 @@
 #Определяем архитектуру ядра Linux
 MACHINE_TYPE=`uname -m`
 if [ $MACHINE_TYPE == x86_64 ]; then
-    OSBIT=64
+    OSBITVER=64
 fi
 if [ $MACHINE_TYPE == 32 ]; then
-    OSBIT=32
+    OSBITVER=32
 fi
 #
 
@@ -17,7 +17,7 @@ source /etc/os-release
 #source /tmp/os-release
 OSRELEASE=$ID
 
-echo -e "\e[1;33;4;44mВаш дистрибутив LINUX - $OSRELEASE $OSBIT\e[0m"
+echo -e "\e[1;33;4;44mВаш дистрибутив LINUX - $OSRELEASE\e[0m"
 #
 
 #Проверка существования файла с именем пользователя и паролем
@@ -92,6 +92,7 @@ done
 fi
 ###
 
+
 #Выбор установки (обновления) платформы или конфигурации
 echo
 echo -e "\e[1;31;42mВыбор установки или обновления платформы (клиентской или серверной), или конфигурации 1С:Предприятие 8.3\e[0m"
@@ -116,6 +117,12 @@ fi
 ########################################################################## Платформа #########################################################################
 
 if [ $VIBORGLAVMENU = "Платформа" ]; then
+
+USERID=`id -u`
+
+if [ $USERID == 0 ]; then
+echo -e "\e[1;31;42mВы работаете как пользователь root\e[0m"
+else
 echo
 echo -e "\e[1;31mВнимание - установка данной программы требует привилегий пользователя root\e[0m"
 echo
@@ -123,8 +130,73 @@ echo -e "\e[1;31;42mВведите пароль пользователя root\e[
 echo
 echo -n "Введите пароль пользователя и нажмите [ENTER]:  "
 read PASSWORDROOT
+fi
 
-#Самостоятельно установить вид пакета или дать выбор пакетного менеджера
+#Самостоятельно определить битность ОС
+echo
+echo -e "\e[1;31;42mСамостоятельно определить битность дистрибутива?\e[0m"
+echo
+PS3='Самостоятельно определить битность дистрибутива? '
+echo
+select OSBITVIBOR in "Да" "Нет"
+do
+  echo
+  echo -e "\e[1;34;4mВы выбрали $OSBITVIBOR\e[0m"
+  echo
+  break
+done
+    if [[ -z "$OSBITVIBOR" ]];then
+    echo  -e "\e[31mНичего не указана\e[0m"
+    exit 1
+    fi
+
+    if [ $OSBITVIBOR = "Да" ]; then
+	#Устанавливаем какие пакеты качать deb или rpm
+	if [ $OSBITVER == 32 ]; then
+	    OSBIT=32
+	    BITPACKETVER=i386
+	fi
+	if [ $OSBITVER == 64 ]; then
+	    OSBIT=64
+	    BITPACKETVER=amd64
+	fi
+    fi
+
+    if [ $OSBITVIBOR = "Нет" ]; then
+    #пакетный менеджер
+    echo
+    echo -e "\e[1;31;42mВыбор вида битности пакетов\e[0m"
+    echo
+    PS3='Какие пакеты устанавливать x86_32 или x86_64 (нажмите 1 или 2)? '
+    echo
+    select BITPAKETVIBOR in "32" "64"
+    do
+      echo
+      echo -e "\e[1;34;4mВы выбрали $BITPAKETVIBOR\e[0m"
+      echo
+      break
+    done
+    if [[ -z "$BITPAKETVIBOR" ]];then
+        echo  -e "\e[31mБитность пакета не указана\e[0m"
+        exit 1
+    fi
+    if [ $BITPAKETVIBOR == 32 ]; then
+	    OSBIT=32
+	    BITPACKETVER=i386
+    fi
+    if [ $BITPAKETVIBOR == 64 ]; then
+	    OSBIT=64
+	    BITPACKETVER=amd64
+    fi
+#
+fi
+#
+
+echo -e "\e[1;33;4;44mВаш дистрибутив LINUX - $OSBIT\e[0m"
+echo -e "\e[1;33;4;44mВаш дистрибутив LINUX - $BITPACKETVER\e[0m"
+
+
+#Самостоятельно определить вид пакета или дать выбор пакетного менеджера
 echo
 echo -e "\e[1;31;42mСамостоятельно определить вид пакетов по типу пакетного менеджера?\e[0m"
 echo
@@ -307,7 +379,7 @@ if [ $SERVER_CLIENT = "Клиент" ]; then
     if [ $(version_platform $VERPLATFORM) -ge $(version_platform "8.3.12.1469") ]; then
 
 	#если x86_64
-	if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+	if [ ${OSBIT} == '64' ]; then
 
 		CLIENTLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
@@ -337,13 +409,13 @@ if [ $SERVER_CLIENT = "Клиент" ]; then
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
-		    --data-urlencode "path=Platform\\$VERPLATFORM1\\{PAKET}_${VERPLATFORM1}.tar.gz" \
+		    --data-urlencode "path=Platform\\$VERPLATFORM1\\${PAKET}_${VERPLATFORM1}.tar.gz" \
 		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
         fi
     #Сравнение версий, если версия ниже 8.3.12.1469 качем отсюда
     else
 
-        if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+        if [ ${OSBIT} == '64' ]; then
 
 		CLIENTLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
@@ -387,7 +459,7 @@ if [ $SERVER_CLIENT = "Сервер" ]; then
     if [ $(version_platform $VERPLATFORM) -ge $(version_platform "8.3.12.1469") ]; then
 
 	#если x86_64
-	if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+	if [ ${OSBIT} == '64' ]; then
 
 		SERVERLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
@@ -409,7 +481,7 @@ if [ $SERVER_CLIENT = "Сервер" ]; then
     #Сравнение версий, если версия ниже 8.3.12.1469 качем отсюда
     else
 
-        if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+        if [ ${OSBIT} == '64' ]; then
 
 		SERVERLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
@@ -441,23 +513,23 @@ mkdir -p $UPLOADDIRPLATFORM
 
 if [ $SERVER_CLIENT = "Клиент" ]; then
 
-    if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+    if [ ${OSBIT} == '64' ]; then
         echo
-        echo -e "\e[1;33;4;44mЗакачиваем клиентскую часть версии для архитектуры $MACHINE_TYPE"
+        echo -e "\e[1;33;4;44mЗакачиваем клиентскую часть версии для архитектуры $OSBIT"
         echo
         curl -# --fail -b /tmp/cookies.txt -o $UPLOADDIRPLATFORM/${VERPLATFORM}.client64.tar.gz -L "$CLIENTLINK"
         echo
-        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $MACHINE_TYPE"
+        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $OSBIT"
         echo
         curl -# --fail -b /tmp/cookies.txt -o $UPLOADDIRPLATFORM/${VERPLATFORM}.server64.tar.gz -L "$SERVERLINK"
         echo -e "\e[0m"
     else
         echo
-        echo -e "\e[1;33;4;44mЗакачиваем клиентскую часть версии для архитектуры $MACHINE_TYPE"
+        echo -e "\e[1;33;4;44mЗакачиваем клиентскую часть версии для архитектуры $OSBIT"
         echo
         curl -# --fail -b /tmp/cookies.txt -o $UPLOADDIRPLATFORM/${VERPLATFORM}.client32.tar.gz -L "$CLIENTLINK"
         echo
-        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $MACHINE_TYPE"
+        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $OSBIT"
         echo
         curl -# --fail -b /tmp/cookies.txt -o $UPLOADDIRPLATFORM/${VERPLATFORM}.server32.tar.gz -L "$SERVERLINK"
         echo -e "\e[0m"
@@ -466,15 +538,15 @@ fi
 
 if [ $SERVER_CLIENT = "Сервер" ]; then
 
-    if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+    if [ ${OSBIT} == '64' ]; then
         echo
-        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $MACHINE_TYPE"
+        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $OSBIT"
         echo
         curl -# --fail -b /tmp/cookies.txt -o $UPLOADDIRPLATFORM/${VERPLATFORM}.server64.tar.gz -L "$SERVERLINK"
         echo -e "\e[0m"
     else
         echo
-        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $MACHINE_TYPE"
+        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $OSBIT"
         echo
         curl -# --fail -b /tmp/cookies.txt -o $UPLOADDIRPLATFORM/${VERPLATFORM}.server32.tar.gz -L "$SERVERLINK"
         echo -e "\e[0m"
@@ -489,28 +561,28 @@ rm /tmp/cookies.txt
 echo -e "\e[1;33;4;44mРаспаковываем платформу 1C\e[0m"
 
 #При установке клиента
-#if [ $SERVER_CLIENT = "Клиент" ]; then
-#    if [ ${MACHINE_TYPE} == 'x86_64' ]; then
-#        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.client64.tar.gz -C $UPLOADDIRPLATFORM
-#        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server64.tar.gz -C $UPLOADDIRPLATFORM
-#    else
-#        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.client32.tar.gz -C $UPLOADDIRPLATFORM
-#        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server32.tar.gz -C $UPLOADDIRPLATFORM
-#    fi
-#fi
+if [ $SERVER_CLIENT = "Клиент" ]; then
+    if [ ${OSBIT} == '64' ]; then
+        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.client64.tar.gz -C $UPLOADDIRPLATFORM
+        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server64.tar.gz -C $UPLOADDIRPLATFORM
+    else
+        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.client32.tar.gz -C $UPLOADDIRPLATFORM
+        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server32.tar.gz -C $UPLOADDIRPLATFORM
+    fi
+fi
 #
 
 #При установке сервера
-#if [ $SERVER_CLIENT = "Сервер" ]; then
-#    if [ ${MACHINE_TYPE} == 'x86_64' ]; then
-#        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server64.tar.gz -C $UPLOADDIRPLATFORM
-#    else
-#        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server32.tar.gz -C $UPLOADDIRPLATFORM
-#    fi
-#fi
+if [ $SERVER_CLIENT = "Сервер" ]; then
+    if [ ${OSBIT} == '64' ]; then
+        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server64.tar.gz -C $UPLOADDIRPLATFORM
+    else
+        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server32.tar.gz -C $UPLOADDIRPLATFORM
+    fi
+fi
 #
 
-tar -xvf $UPLOADDIRPLATFORM/*.tar.gz -C $UPLOADDIRPLATFORM
+#tar -xvf $UPLOADDIRPLATFORM/*.tar.gz -C $UPLOADDIRPLATFORM
 
 #Удаляем tar.gz
 rm $UPLOADDIRPLATFORM/*.tar.gz
@@ -528,8 +600,12 @@ rm $UPLOADDIRPLATFORM/*.deb
 #
 
 #Копируем tar.gz в папку /var/calculate/remote/distfiles\
-echo -e "\e[1;33;4;44mКопируем пакеты платформы в формате tar.gz в папку /var/calculate/remote/distfiles\e[0m"
-echo $PASSWORDROOT | sudo -S cp $UPLOADDIRPLATFORM/*.tar.gz /var/calculate/remote/distfiles
+#echo -e "\e[1;33;4;44mКопируем пакеты платформы в формате tar.gz в папку /var/calculate/remote/distfiles\e[0m"
+#if [ $USERID == 0 ]; then
+#cp $UPLOADDIRPLATFORM/*.tar.gz /var/calculate/remote/distfiles
+#else
+#echo $PASSWORDROOT | sudo -S cp $UPLOADDIRPLATFORM/*.tar.gz /var/calculate/remote/distfiles
+#fi
 #
 
 
@@ -552,10 +628,19 @@ done
     fi
 
     if [ $INSTALLPLATFORMEMERGE = "Да" ]; then
+    VERPLATFORMSTIRE=`echo $VERPLATFORM | sed -re's/([[:digit:]]+\.[[:digit:]]+.[[:digit:]]+)\.([[:digit:]]+)/\1-\2/'`
+
 	if [ $SERVER_CLIENT = "Клиент" ]; then
-	    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-client-${VERPLATFORM}\e[0m"
-	    echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-${VERPLATFORM}
-	    echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-nls-${VERPLATFORM}
+	echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-client-${VERPLATFORM}\e[0m"
+	    if [ $USERID == 0 ]; then
+#		emerge =1c-enterprise83-client-${VERPLATFORM}
+#		emerge =1c-enterprise83-client-nls-${VERPLATFORM}
+	    tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-client_${VERPLATFORMSTIRE}_amd64.tar.gz -C /tmp/10
+	    else
+#		echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-${VERPLATFORM}
+#		echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-nls-${VERPLATFORM}
+		echo $PASSWORDROOT | sudo -S tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-client_${VERPLATFORMSTIRE}_amd64.tar.gz -C /tmp/10
+	    fi
 	fi
 	if [ $SERVER_CLIENT = "Сервер" ]; then
         #Устанавливаем или нет Postgres
@@ -576,9 +661,14 @@ done
 		exit 1
 		fi
 		if [ $INSTALLPLATFORMEMERGEPOSTGRES = "Да" ]; then
-			    echo -e "\e[1;34;4mУстанавливаем Postgres\e[0m"
+		    echo -e "\e[1;34;4mУстанавливаем Postgres\e[0m"
+			if [ $USERID == 0 ]; then
+			    USE="server postgres" emerge =1c-enterprise83-server-${VERPLATFORM}
+			    emerge =1c-enterprise83-server-nls-${VERPLATFORM}
+			else
 			    echo $PASSWORDROOT | sudo -S USE="server postgres" emerge =1c-enterprise83-server-${VERPLATFORM}
 			    echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-server-nls-${VERPLATFORM}
+			fi
 		fi
 		if [ $INSTALLPLATFORMEMERGEPOSTGRES = "Нет" ]; then
 		        echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С , например emerge =\e[0m"
@@ -601,9 +691,14 @@ done
 			    exit 1
 		        fi
 			if [ $INSTALLPLATFORMEMERGEWEB1C = "Да" ]; then
-			    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-ws-${VERPLATFORM}\e[0m"
-			    echo $PASSWORDROOT | sudo -S USE"server" emerge =1c-enterprise83-ws-${VERPLATFORM}
-			    echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-ws-nls-${VERPLATFORM}
+			echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-ws-${VERPLATFORM}\e[0m"
+			    if [ $USERID == 0 ]; then
+				USE"server" emerge =1c-enterprise83-ws-${VERPLATFORM}
+				emerge =1c-enterprise83-ws-nls-${VERPLATFORM}
+			    else
+				echo $PASSWORDROOT | sudo -S USE"server" emerge =1c-enterprise83-ws-${VERPLATFORM}
+				echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-ws-nls-${VERPLATFORM}
+			    fi
 			fi
 		    
 		        if [ $INSTALLPLATFORMEMERGEWEB1C = "Нет" ]; then
@@ -642,20 +737,36 @@ done
 
     if [ $INSTALLPLATFORMDEB = "Да" ]; then
 	if [ $SERVER_CLIENT = "Клиент" ]; then
-	    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-client-${VERPLATFORM}\e[0m"
-	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common
-	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common-nls
-	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server
-	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server-nls
-	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-client
-	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-client-nls
+	echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-client-${VERPLATFORM}\e[0m"
+	    if [ $USERID == 0 ]; then
+		dpkg -i 1c-enterprise83-common
+		dpkg -i 1c-enterprise83-common-nls
+		dpkg -i 1c-enterprise83-server
+		dpkg -i 1c-enterprise83-server-nls
+		dpkg -i 1c-enterprise83-client
+		dpkg -i 1c-enterprise83-client-nls
+	    else
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common-nls
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server-nls
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-client
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-client-nls
+	    fi
 	fi
 	if [ $SERVER_CLIENT = "Сервер" ]; then
-	    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-server-${VERPLATFORM}\e[0m"
-	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common_$VERPLATFORM.$PAKETNAME
-	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common-nls_$VERPLATFORM.$PAKETNAME
-	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server_$VERPLATFORM.$PAKETNAME
-	    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server-nls_${VERPLATFORM}_
+	echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-server-${VERPLATFORM}\e[0m"
+	    if [ $USERID == 0 ]; then
+		dpkg -i 1c-enterprise83-common_$VERPLATFORM.$PAKETNAME
+		dpkg -i 1c-enterprise83-common-nls_$VERPLATFORM.$PAKETNAME
+		dpkg -i 1c-enterprise83-server_$VERPLATFORM.$PAKETNAME
+		dpkg -i 1c-enterprise83-server-nls_${VERPLATFORM}_
+	    else
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common_$VERPLATFORM.$PAKETNAME
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common-nls_$VERPLATFORM.$PAKETNAME
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server_$VERPLATFORM.$PAKETNAME
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server-nls_${VERPLATFORM}_
+	    fi
 	    
 		    #Устанавливаем или нет WEB компоненту 1С Сервер
 		    echo
@@ -675,9 +786,14 @@ done
 			    exit 1
 		        fi
 			if [ $INSTALLPLATFORMDEBWEB1C = "Да" ]; then
-			    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-ws-${VERPLATFORM}\e[0m"
-			    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-ws
-			    echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-ws-nls
+			echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-ws-${VERPLATFORM}\e[0m"
+			    if [ $USERID == 0 ]; then
+				dpkg -i 1c-enterprise83-ws
+				dpkg -i 1c-enterprise83-ws-nls
+			    else
+				echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-ws
+				echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-ws-nls
+			    fi
 			fi
 		    
 		        if [ $INSTALLPLATFORMDEBWEB1C = "Нет" ]; then
@@ -718,20 +834,36 @@ done
 
     if [ $INSTALLPLATFORMRPM = "Да" ]; then
 	if [ $SERVER_CLIENT = "Клиент" ]; then
-	    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-client-${VERPLATFORM}\e[0m"
-	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common
-	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common-nls
-	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server
-	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server-nls
-	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-client
-	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-client-nls
+	echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-client-${VERPLATFORM}\e[0m"
+	    if [ $USERID == 0 ]; then
+		yum -y 1c-enterprise83-common
+		yum -y 1c-enterprise83-common-nls
+		yum -y 1c-enterprise83-server
+		yum -y 1c-enterprise83-server-nls
+		yum -y 1c-enterprise83-client
+		yum -y 1c-enterprise83-client-nls
+	    else
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common-nls
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server-nls
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-client
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-client-nls
+	    fi
 	fi
 	if [ $SERVER_CLIENT = "Сервер" ]; then
-	    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-server-${VERPLATFORM}\e[0m"
-	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common
-	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common-nls
-	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server
-	    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server-nls
+	echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-server-${VERPLATFORM}\e[0m"
+	    if [ $USERID == 0 ]; then
+		yum -y 1c-enterprise83-common
+		yum -y 1c-enterprise83-common-nls
+		yum -y 1c-enterprise83-server
+		yum -y 1c-enterprise83-server-nls
+	    else
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common-nls
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server-nls
+	    fi
 	    
 		    #Устанавливаем или нет WEB компоненту 1С Сервер
 		    echo
@@ -752,9 +884,14 @@ done
 		        fi
 			#
 			if [ $INSTALLPLATFORMRPMWEB1C = "Да" ]; then
-			    echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-ws-${VERPLATFORM}\e[0m"
-			    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-ws
-			    echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-ws-nls
+			echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-ws-${VERPLATFORM}\e[0m"
+			    if [ $USERID == 0 ]; then
+				yum -y 1c-enterprise83-ws
+				yum -y 1c-enterprise83-ws-nls
+			    else
+				echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-ws
+				echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-ws-nls
+			    fi
 			fi
 			#
 		        if [ $INSTALLPLATFORMRPMBWEB1C = "Нет" ]; then
@@ -834,7 +971,7 @@ if [ $DELFILESVIBORPLATFORM = "Нет" ]; then
         exit 0
     fi
 
-    if [ $COPYFILESVIBORCONF = "Нет" ]; then
+    if [ $COPYFILESVIBORPLATFORM = "Нет" ]; then
         echo "Все скачанные файлы остались в каталоге $UPLOADDIRPLATFORM"
         exit 0
     fi
