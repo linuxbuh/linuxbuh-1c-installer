@@ -7,7 +7,7 @@ MACHINE_TYPE=`uname -m`
 if [ $MACHINE_TYPE == x86_64 ]; then
     OSBITVER=64
 fi
-if [ $MACHINE_TYPE == 32 ]; then
+if [ $MACHINE_TYPE == i686 ]; then
     OSBITVER=32
 fi
 #
@@ -154,7 +154,7 @@ done
 	#Устанавливаем какие пакеты качать deb или rpm
 	if [ $OSBITVER == 32 ]; then
 	    OSBIT=32
-	    BITPACKETVER=i386
+	    BITPACKETVER=i686
 	fi
 	if [ $OSBITVER == 64 ]; then
 	    OSBIT=64
@@ -182,7 +182,7 @@ done
     fi
     if [ $BITPAKETVIBOR == 32 ]; then
 	    OSBIT=32
-	    BITPACKETVER=i386
+	    BITPACKETVER=i686
     fi
     if [ $BITPAKETVIBOR == 64 ]; then
 	    OSBIT=64
@@ -633,13 +633,13 @@ done
 	if [ $SERVER_CLIENT = "Клиент" ]; then
 	echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-client-${VERPLATFORM}\e[0m"
 	    if [ $USERID == 0 ]; then
-#		emerge =1c-enterprise83-client-${VERPLATFORM}
-#		emerge =1c-enterprise83-client-nls-${VERPLATFORM}
-	    tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-client_${VERPLATFORMSTIRE}_amd64.tar.gz -C /tmp/10
+		emerge =1c-enterprise83-client-${VERPLATFORM}
+		emerge =1c-enterprise83-client-nls-${VERPLATFORM}
+#	    tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-client_${VERPLATFORMSTIRE}_amd64.tar.gz -C /tmp/10
 	    else
-#		echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-${VERPLATFORM}
-#		echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-nls-${VERPLATFORM}
-		echo $PASSWORDROOT | sudo -S tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-client_${VERPLATFORMSTIRE}_amd64.tar.gz -C /tmp/10
+		echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-${VERPLATFORM}
+		echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-nls-${VERPLATFORM}
+#		echo $PASSWORDROOT | sudo -S tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-client_${VERPLATFORMSTIRE}_amd64.tar.gz -C /tmp/10
 	    fi
 	fi
 	if [ $SERVER_CLIENT = "Сервер" ]; then
