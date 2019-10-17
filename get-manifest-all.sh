@@ -250,5 +250,7 @@ fi
 #удаляем папку
 rm -Rf /tmp/platform1c
 
+./new-manifest-1c.sh $VER
+
 echo "Теперь выполните комманду по установке 1С клиента, например emerge 1c-enterprise83-client-$VER"
 
