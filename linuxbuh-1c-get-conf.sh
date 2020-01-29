@@ -262,7 +262,7 @@ if [ $CONFVERSION = Trade110 ]; then
     --data-urlencode "nick=$CONFVERSION" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=$CONF\\$VER1\\${CONF}_${VER4}.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
     else
 
@@ -271,7 +271,7 @@ if [ $CONFVERSION = Trade110 ]; then
     --data-urlencode "nick=$CONFVERSION" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=$CONF\\$VER1\\$SETUP.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
     fi
 
@@ -287,7 +287,7 @@ if [ $CONFVERSION = Accounting30 ]; then
     --data-urlencode "nick=$CONFVERSION" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=$CONF\\$VER1\\${CONF}_${VER4}.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
     else
 
@@ -296,7 +296,7 @@ if [ $CONFVERSION = Accounting30 ]; then
     --data-urlencode "nick=$CONFVERSION" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=$CONF\\$VER1\\$SETUP.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
     fi
 
@@ -312,7 +312,7 @@ if [ $CONFVERSION = HRM30 ]; then
     --data-urlencode "nick=$CONFVERSION" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=$CONF\\$VER1\\${CONF}_${VER4}.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
     else
 
@@ -321,7 +321,7 @@ if [ $CONFVERSION = HRM30 ]; then
     --data-urlencode "nick=$CONFVERSION" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=$CONF\\$VER1\\$SETUP.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
     fi
 

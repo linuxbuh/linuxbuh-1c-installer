@@ -386,14 +386,14 @@ if [ $SERVER_CLIENT = "Клиент" ]; then
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\client_$VERPLATFORM1.$PAKETNAME.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
 		SERVERLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\${PAKETNAME}_${VERPLATFORM1}.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
         else
 
@@ -403,14 +403,14 @@ if [ $SERVER_CLIENT = "Клиент" ]; then
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\client_$VERPLATFORM1.$PAKETNAME.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
 		SERVERLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\${PAKET}_${VERPLATFORM1}.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
         fi
     #Сравнение версий, если версия ниже 8.3.12.1469 качем отсюда
     else
@@ -422,14 +422,14 @@ if [ $SERVER_CLIENT = "Клиент" ]; then
 	    --data-urlencode "nick=Platform83" \
 	    --data-urlencode "ver=$VERPLATFORM" \
 	    --data-urlencode "path=Platform\\$VERPLATFORM1\\client.$PAKETNAME.tar.gz" \
-	    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+	    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
 		SERVERLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\$PAKETNAME.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
         else
 
@@ -438,14 +438,14 @@ if [ $SERVER_CLIENT = "Клиент" ]; then
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\client.$PAKETNAME.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
 		SERVERLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\$PAKET.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
         fi
 
@@ -466,7 +466,7 @@ if [ $SERVER_CLIENT = "Сервер" ]; then
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\${PAKETNAME}_${VERPLATFORM1}.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
         else
 
@@ -476,7 +476,7 @@ if [ $SERVER_CLIENT = "Сервер" ]; then
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\${PAKET}_${VERPLATFORM1}.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
         fi
     #Сравнение версий, если версия ниже 8.3.12.1469 качем отсюда
     else
@@ -488,7 +488,7 @@ if [ $SERVER_CLIENT = "Сервер" ]; then
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\$PAKETNAME.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
         else
 
@@ -497,7 +497,7 @@ if [ $SERVER_CLIENT = "Сервер" ]; then
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\$PAKET.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
         fi
 
@@ -633,13 +633,13 @@ done
 	if [ $SERVER_CLIENT = "Клиент" ]; then
 	echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-client-${VERPLATFORM}\e[0m"
 	    if [ $USERID == 0 ]; then
-#		emerge =1c-enterprise83-client-${VERPLATFORM}
-#		emerge =1c-enterprise83-client-nls-${VERPLATFORM}
-	    tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-client_${VERPLATFORMSTIRE}_amd64.tar.gz -C /tmp/10
+		emerge =1c-enterprise83-client-${VERPLATFORM}
+		emerge =1c-enterprise83-client-nls-${VERPLATFORM}
+#	    tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-client_${VERPLATFORMSTIRE}_amd64.tar.gz -C /tmp/10
 	    else
-#		echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-${VERPLATFORM}
-#		echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-nls-${VERPLATFORM}
-		echo $PASSWORDROOT | sudo -S tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-client_${VERPLATFORMSTIRE}_amd64.tar.gz -C /tmp/10
+		echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-${VERPLATFORM}
+		echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-nls-${VERPLATFORM}
+#		echo $PASSWORDROOT | sudo -S tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-client_${VERPLATFORMSTIRE}_amd64.tar.gz -C /tmp/10
 	    fi
 	fi
 	if [ $SERVER_CLIENT = "Сервер" ]; then
@@ -1228,7 +1228,7 @@ if [ $CONFVERSION = Trade110 ]; then
     --data-urlencode "nick=$CONFVERSION" \
     --data-urlencode "ver=$VERCONF" \
     --data-urlencode "path=$CONF\\$VERCONF1\\${CONF}_${VERCONF4}.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
     else
 
@@ -1237,7 +1237,7 @@ if [ $CONFVERSION = Trade110 ]; then
     --data-urlencode "nick=$CONFVERSION" \
     --data-urlencode "ver=$VERCONF" \
     --data-urlencode "path=$CONF\\$VERCONF1\\$SETUP.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
     fi
 
@@ -1253,7 +1253,7 @@ if [ $CONFVERSION = Accounting30 ]; then
     --data-urlencode "nick=$CONFVERSION" \
     --data-urlencode "ver=$VERCONF" \
     --data-urlencode "path=$CONF\\$VERCONF1\\${CONF}_${VERCONF4}.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
     else
 
@@ -1262,7 +1262,7 @@ if [ $CONFVERSION = Accounting30 ]; then
     --data-urlencode "nick=$CONFVERSION" \
     --data-urlencode "ver=$VERCONF" \
     --data-urlencode "path=$CONF\\$VERCONF1\\$SETUP.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
     fi
 
@@ -1278,7 +1278,7 @@ if [ $CONFVERSION = HRM30 ]; then
     --data-urlencode "nick=$CONFVERSION" \
     --data-urlencode "ver=$VERCONF" \
     --data-urlencode "path=$CONF\\$VERCONF1\\${CONF}_${VERCONF4}.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
     else
 
@@ -1287,7 +1287,7 @@ if [ $CONFVERSION = HRM30 ]; then
     --data-urlencode "nick=$CONFVERSION" \
     --data-urlencode "ver=$VERCONF" \
     --data-urlencode "path=$CONF\\$VERCONF1\\$SETUP.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
     fi
 

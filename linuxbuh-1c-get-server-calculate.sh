@@ -84,7 +84,7 @@ SERVERLINK=$(curl -s -G \
     --data-urlencode "nick=Platform83" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=Platform\\$VER1\\deb64_$VER1.tar.gz" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
 else
 
@@ -94,7 +94,7 @@ SERVERLINK=$(curl -s -G \
     --data-urlencode "nick=Platform83" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=Platform\\$VER1\\deb_$VER1.tar.gz" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
 fi
 
@@ -107,7 +107,7 @@ SERVERLINK=$(curl -s -G \
     --data-urlencode "nick=Platform83" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=Platform\\$VER1\\deb64.tar.gz" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
 else
 
@@ -116,7 +116,7 @@ SERVERLINK=$(curl -s -G \
     --data-urlencode "nick=Platform83" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=Platform\\$VER1\\deb.tar.gz" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
 
 fi
 
