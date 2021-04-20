@@ -5,8 +5,8 @@
 
 #read -p "Пользователь:" USERNAME
 #read -p "Пароль:" PASSWORD
-USERNAME=9257976
-PASSWORD=ztd57s4s
+USERNAME=$1
+PASSWORD=$2
 
 UPLOADDIRPLATFORM=/tmp/dist1c
 #Функция для сравнения версий
