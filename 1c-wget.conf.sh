@@ -2,8 +2,8 @@
 
 #20180809
 
-USERNAME=9257976
-PASSWORD=ztd57s4s
+USERNAME=$1
+PASSWORD=$2
 
 if [[ -z "$USERNAME" ]];then
     echo "USERNAME not set"
