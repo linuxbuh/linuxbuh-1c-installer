@@ -4,8 +4,8 @@
 
 #read -p "Пользователь:" USERNAME
 #read -p "Пароль:" PASSWORD
-USERNAME=9257976
-PASSWORD=ztd57s4s
+USERNAME=$1
+PASSWORD=$2
 
 #Функция для сравнения версий
 #function version_platform { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
