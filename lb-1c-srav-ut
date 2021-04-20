@@ -6,8 +6,8 @@
 #read -p "Пароль:" PASSWORD
 #read -p "Конфигурация:" CONFVERSION
 CONFVERSION=Trade110
-USERNAME=9257976
-PASSWORD=ztd57s4s
+USERNAME=$1
+PASSWORD=$2
 
 #Подключаемся к серверу 1С
 SRC=$(curl -c /tmp/cookies.txt -s -L https://releases.1c.ru)
