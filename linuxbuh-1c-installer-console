@@ -2,20 +2,13 @@
 
 #Колличество знаков # означают начало и конец определенной процедуры с наименованием, чем больше знаков - тем длиннее процедура
 
-#Включаем Xdialog bkb dialog
-if [ "$DISPLAY" != "" ]; then
-    DIALOG="Xdialog"
-else
-    DIALOG="dialog"
-fi
-
 #Определяем архитектуру ядра Linux
 MACHINE_TYPE=`uname -m`
 if [ $MACHINE_TYPE == x86_64 ]; then
-    OSBIT=64
+    OSBITVER=64
 fi
-if [ $MACHINE_TYPE == 32 ]; then
-    OSBIT=32
+if [ $MACHINE_TYPE == i686 ]; then
+    OSBITVER=32
 fi
 #
 
@@ -24,7 +17,7 @@ source /etc/os-release
 #source /tmp/os-release
 OSRELEASE=$ID
 
-echo -e "\e[1;33;4;44mВаш дистрибутив LINUX - $OSRELEASE $OSBIT\e[0m"
+echo -e "\e[1;33;4;44mВаш дистрибутив LINUX - $OSRELEASE\e[0m"
 #
 
 #Проверка существования файла с именем пользователя и паролем
@@ -51,22 +44,13 @@ PASSWORD=$PASSWORD
 #
 else
 #Меню ввода имени и пароля
-$DIALOG --title "Ввод имени пользователя и пароля для сайта https://portal.1c.ru/" \
-#        --no-cancel \
-        --left \
-        --password=2 \
-        --separator="\n" \
-        --2inputsbox "Type your credentials\nto access the system" 20 40 "Login(user): " "" "Password: " "" 2> $tempfile
-
-retval=$?
-
-#echo -e "\e[1;31;42mВвод имени пользователя и пароля для сайта https://portal.1c.ru/ \e[0m"
-#echo
-#echo -n "Введите имя пользователя и нажмите [ENTER]: "
-#read USERNAME
-#echo -n "Введите пароль пользователя и нажмите [ENTER]:  "
-#read PASSWORD
-#echo
+echo -e "\e[1;31;42mВвод имени пользователя и пароля для сайта https://portal.1c.ru/ \e[0m"
+echo
+echo -n "Введите имя пользователя и нажмите [ENTER]: "
+read USERNAME
+echo -n "Введите пароль пользователя и нажмите [ENTER]:  "
+read PASSWORD
+echo
 #
 #Проверяем заполнение имени и пароля
     if [[ -z "$USERNAME" ]];then
@@ -110,54 +94,6 @@ fi
 
 
 
-tempfile=`mktemp 2>/dev/null` || tempfile=/tmp/test$$
-trap "rm -f $tempfile" 0 1 2 5 15
-
-$DIALOG --clear --title "Установка или обновление платформ и конфигураций 1С:Предприятие" \
-        --menu "Список разделов:" 100 100 100 \
-                "1c_platform83"  "Установка или обновление платформы 1С:Предприятие 8.3" \
-                "1c_conf8" "Установка или обновление конфигураций 1С:Предприятие 8" 2> $tempfile
-        retval=$?
-
-        choice=`cat $tempfile`
-
-############################ 1C_Enterprise_update
-### menu 1C_Enterprise_update
-
-if [ "$choice" = "1c_platform83" ]; then
-
-$DIALOG --clear --title "Установка или обновление платформы 1С:Предприятие 8.3" \
-        --menu "Установка или обновление платформы 1С:Предприятие 8.3:" 100 100 100 \
-                "1c_platform83_client"  "Установка или обновление клиентской части платформы 1С:Предприятие 8.3" \
-                "1c_platform83_server"  "Установка или обновление серверной части платформы 1С:Предприятие 8.3" 2> $tempfile
-        retval=$?
-
-        choice=`cat $tempfile`
-
-
-############ end menu 1C_Enterprise_update
-
-############################ 1C_Enterprise83_update
-### menu 1C_Enterprise83_update
-
-  if [ "$choice" = "1centerprise83_update" ]; then
-
-    textfile="$pathtextfile/1centerprise83.txt"
-
-    nameprogram="1C Предприятие 8.3"
-
-    $DIALOG $OPTS --msgbox "Обновляем $nameprogram" 10 60
-    sudo layman -s linuxbuh && sudo eix-update && sudo dispatch-conf && sudo emerge app-office/1c-enterprise83-common app-office/1c-enterprise83-server app-office/1c-enterprise83-client
-    $DIALOG $OPTS --msgbox "Обновили $nameprogram" 10 60
-
-  fi
-
-
-############ end menu 1C_Enterprise83_update
-fi
-
-
-
 #Выбор установки (обновления) платформы или конфигурации
 echo
 echo -e "\e[1;31;42mВыбор установки или обновления платформы (клиентской или серверной), или конфигурации 1С:Предприятие 8.3\e[0m"
@@ -182,6 +118,35 @@ fi
 ########################################################################## Платформа #########################################################################
 
 if [ $VIBORGLAVMENU = "Платформа" ]; then
+
+#Выбор установки или удаления платформы
+
+echo
+echo -e "\e[1;31;42mВыбор установки, обновления или удаления платформы 1С:Предприятие 8.3\e[0m"
+echo
+PS3='Выберите (нажмите цифру - например 1): '
+echo
+select INSTALLUPDATEDELPLATFORM in "Установка" "Обновление" "Удаление"
+do
+  echo
+  echo -e "\e[1;34;4mВы выбрали $INSTALLUPDATEDELPLATFORM\e[0m"
+  echo
+  break
+done
+#
+#Проверка
+if [[ -z "$INSTALLUPDATEDELPLATFORM" ]];then
+    echo  -e "\e[31mВы не выбрали\e[0m"
+    exit 1
+fi
+#
+
+
+USERID=`id -u`
+
+if [ $USERID == 0 ]; then
+echo -e "\e[1;31;42mВы работаете как пользователь root\e[0m"
+else
 echo
 echo -e "\e[1;31mВнимание - установка данной программы требует привилегий пользователя root\e[0m"
 echo
@@ -189,8 +154,73 @@ echo -e "\e[1;31;42mВведите пароль пользователя root\e[
 echo
 echo -n "Введите пароль пользователя и нажмите [ENTER]:  "
 read PASSWORDROOT
+fi
 
-#Самостоятельно установить вид пакета или дать выбор пакетного менеджера
+#Самостоятельно определить битность ОС
+echo
+echo -e "\e[1;31;42mСамостоятельно определить битность дистрибутива?\e[0m"
+echo
+PS3='Самостоятельно определить битность дистрибутива? '
+echo
+select OSBITVIBOR in "Да" "Нет"
+do
+  echo
+  echo -e "\e[1;34;4mВы выбрали $OSBITVIBOR\e[0m"
+  echo
+  break
+done
+    if [[ -z "$OSBITVIBOR" ]];then
+    echo  -e "\e[31mНичего не указана\e[0m"
+    exit 1
+    fi
+
+    if [ $OSBITVIBOR = "Да" ]; then
+	#Устанавливаем какие пакеты качать deb или rpm
+	if [ $OSBITVER == 32 ]; then
+	    OSBIT=32
+	    BITPACKETVER=i686
+	fi
+	if [ $OSBITVER == 64 ]; then
+	    OSBIT=64
+	    BITPACKETVER=amd64
+	fi
+    fi
+
+    if [ $OSBITVIBOR = "Нет" ]; then
+    #пакетный менеджер
+    echo
+    echo -e "\e[1;31;42mВыбор вида битности пакетов\e[0m"
+    echo
+    PS3='Какие пакеты устанавливать x86_32 или x86_64 (нажмите 1 или 2)? '
+    echo
+    select BITPAKETVIBOR in "32" "64"
+    do
+      echo
+      echo -e "\e[1;34;4mВы выбрали $BITPAKETVIBOR\e[0m"
+      echo
+      break
+    done
+    if [[ -z "$BITPAKETVIBOR" ]];then
+        echo  -e "\e[31mБитность пакета не указана\e[0m"
+        exit 1
+    fi
+    if [ $BITPAKETVIBOR == 32 ]; then
+	    OSBIT=32
+	    BITPACKETVER=i686
+    fi
+    if [ $BITPAKETVIBOR == 64 ]; then
+	    OSBIT=64
+	    BITPACKETVER=amd64
+    fi
+#
+fi
+#
+
+#echo -e "\e[1;33;4;44mВаш дистрибутив LINUX - $OSBIT\e[0m"
+echo -e "\e[1;33;4;44mВаш дистрибутив LINUX - $BITPACKETVER\e[0m"
+
+
+#Самостоятельно определить вид пакета или дать выбор пакетного менеджера
 echo
 echo -e "\e[1;31;42mСамостоятельно определить вид пакетов по типу пакетного менеджера?\e[0m"
 echo
@@ -278,6 +308,8 @@ fi
 #
 
 echo "$PAKETNAME"
+
+if [ $INSTALLUPDATEDELPLATFORM = "Установка" ]; then
 
 #Меню - сервер или клиент
 echo -e "\e[1;31;42mЧто устанавливаем\e[0m"
@@ -373,7 +405,7 @@ if [ $SERVER_CLIENT = "Клиент" ]; then
     if [ $(version_platform $VERPLATFORM) -ge $(version_platform "8.3.12.1469") ]; then
 
 	#если x86_64
-	if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+	if [ ${OSBIT} == '64' ]; then
 
 		CLIENTLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
@@ -403,13 +435,13 @@ if [ $SERVER_CLIENT = "Клиент" ]; then
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
-		    --data-urlencode "path=Platform\\$VERPLATFORM1\\{PAKET}_${VERPLATFORM1}.tar.gz" \
+		    --data-urlencode "path=Platform\\$VERPLATFORM1\\${PAKET}_${VERPLATFORM1}.tar.gz" \
 		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
         fi
     #Сравнение версий, если версия ниже 8.3.12.1469 качем отсюда
     else
 
-        if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+        if [ ${OSBIT} == '64' ]; then
 
 		CLIENTLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
@@ -453,7 +485,7 @@ if [ $SERVER_CLIENT = "Сервер" ]; then
     if [ $(version_platform $VERPLATFORM) -ge $(version_platform "8.3.12.1469") ]; then
 
 	#если x86_64
-	if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+	if [ ${OSBIT} == '64' ]; then
 
 		SERVERLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
@@ -475,7 +507,7 @@ if [ $SERVER_CLIENT = "Сервер" ]; then
     #Сравнение версий, если версия ниже 8.3.12.1469 качем отсюда
     else
 
-        if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+        if [ ${OSBIT} == '64' ]; then
 
 		SERVERLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
@@ -483,6 +515,7 @@ if [ $SERVER_CLIENT = "Сервер" ]; then
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\$PAKETNAME.tar.gz" \
 		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
+
 
         else
 
@@ -492,6 +525,7 @@ if [ $SERVER_CLIENT = "Сервер" ]; then
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\$PAKET.tar.gz" \
 		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
+
 
         fi
 
@@ -507,23 +541,23 @@ mkdir -p $UPLOADDIRPLATFORM
 
 if [ $SERVER_CLIENT = "Клиент" ]; then
 
-    if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+    if [ ${OSBIT} == '64' ]; then
         echo
-        echo -e "\e[1;33;4;44mЗакачиваем клиентскую часть версии для архитектуры $MACHINE_TYPE"
+        echo -e "\e[1;33;4;44mЗакачиваем клиентскую часть версии для архитектуры $OSBIT"
         echo
         curl -# --fail -b /tmp/cookies.txt -o $UPLOADDIRPLATFORM/${VERPLATFORM}.client64.tar.gz -L "$CLIENTLINK"
         echo
-        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $MACHINE_TYPE"
+        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $OSBIT"
         echo
         curl -# --fail -b /tmp/cookies.txt -o $UPLOADDIRPLATFORM/${VERPLATFORM}.server64.tar.gz -L "$SERVERLINK"
         echo -e "\e[0m"
     else
         echo
-        echo -e "\e[1;33;4;44mЗакачиваем клиентскую часть версии для архитектуры $MACHINE_TYPE"
+        echo -e "\e[1;33;4;44mЗакачиваем клиентскую часть версии для архитектуры $OSBIT"
         echo
         curl -# --fail -b /tmp/cookies.txt -o $UPLOADDIRPLATFORM/${VERPLATFORM}.client32.tar.gz -L "$CLIENTLINK"
         echo
-        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $MACHINE_TYPE"
+        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $OSBIT"
         echo
         curl -# --fail -b /tmp/cookies.txt -o $UPLOADDIRPLATFORM/${VERPLATFORM}.server32.tar.gz -L "$SERVERLINK"
         echo -e "\e[0m"
@@ -532,15 +566,15 @@ fi
 
 if [ $SERVER_CLIENT = "Сервер" ]; then
 
-    if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+    if [ ${OSBIT} == '64' ]; then
         echo
-        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $MACHINE_TYPE"
+        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $OSBIT"
         echo
         curl -# --fail -b /tmp/cookies.txt -o $UPLOADDIRPLATFORM/${VERPLATFORM}.server64.tar.gz -L "$SERVERLINK"
         echo -e "\e[0m"
     else
         echo
-        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $MACHINE_TYPE"
+        echo -e "\e[1;33;4;44mЗакачиваем серверную часть версии для архитектуры $OSBIT"
         echo
         curl -# --fail -b /tmp/cookies.txt -o $UPLOADDIRPLATFORM/${VERPLATFORM}.server32.tar.gz -L "$SERVERLINK"
         echo -e "\e[0m"
@@ -555,28 +589,28 @@ rm /tmp/cookies.txt
 echo -e "\e[1;33;4;44mРаспаковываем платформу 1C\e[0m"
 
 #При установке клиента
-#if [ $SERVER_CLIENT = "Клиент" ]; then
-#    if [ ${MACHINE_TYPE} == 'x86_64' ]; then
-#        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.client64.tar.gz -C $UPLOADDIRPLATFORM
-#        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server64.tar.gz -C $UPLOADDIRPLATFORM
-#    else
-#        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.client32.tar.gz -C $UPLOADDIRPLATFORM
-#        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server32.tar.gz -C $UPLOADDIRPLATFORM
-#    fi
-#fi
+if [ $SERVER_CLIENT = "Клиент" ]; then
+    if [ ${OSBIT} == '64' ]; then
+        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.client64.tar.gz -C $UPLOADDIRPLATFORM
+        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server64.tar.gz -C $UPLOADDIRPLATFORM
+    else
+        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.client32.tar.gz -C $UPLOADDIRPLATFORM
+        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server32.tar.gz -C $UPLOADDIRPLATFORM
+    fi
+fi
 #
 
 #При установке сервера
-#if [ $SERVER_CLIENT = "Сервер" ]; then
-#    if [ ${MACHINE_TYPE} == 'x86_64' ]; then
-#        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server64.tar.gz -C $UPLOADDIRPLATFORM
-#    else
-#        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server32.tar.gz -C $UPLOADDIRPLATFORM
-#    fi
-#fi
+if [ $SERVER_CLIENT = "Сервер" ]; then
+    if [ ${OSBIT} == '64' ]; then
+        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server64.tar.gz -C $UPLOADDIRPLATFORM
+    else
+        tar -xvf $UPLOADDIRPLATFORM/${VERPLATFORM}.server32.tar.gz -C $UPLOADDIRPLATFORM
+    fi
+fi
 #
 
-tar -xvf $UPLOADDIRPLATFORM/*.tar.gz -C $UPLOADDIRPLATFORM
+#tar -xvf $UPLOADDIRPLATFORM/*.tar.gz -C $UPLOADDIRPLATFORM
 
 #Удаляем tar.gz
 rm $UPLOADDIRPLATFORM/*.tar.gz
@@ -593,11 +627,232 @@ echo -e "\e[1;33;4;44mУдаляем deb пакеты\e[0m"
 rm $UPLOADDIRPLATFORM/*.deb
 #
 
-#Копируем tar.gz в папку /var/calculate/remote/distfiles\
-echo -e "\e[1;33;4;44mКопируем пакеты платформы в формате tar.gz в папку /var/calculate/remote/distfiles\e[0m"
-echo $PASSWORDROOT | sudo -S cp $UPLOADDIRPLATFORM/*.tar.gz /var/calculate/remote/distfiles
+#Устанавливаем или нет пакеты в систему
+echo
+echo -e "\e[1;31;42mУстановить программу?\e[0m"
+echo
+PS3='Установить программу? '
+echo
+select INSTALLPLATFORMEMERGE in "Да" "Нет" "Распаковать_клиента_в_папку"
+do
+  echo
+  echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORMEMERGE\e[0m"
+  echo
+  break
+done
+    if [[ -z "$INSTALLPLATFORMEMERGE" ]];then
+    echo  -e "\e[31mНичего не указано\e[0m"
+    exit 1
+    fi
+
+    if [ $INSTALLPLATFORMEMERGE = "Да" ]; then
+    #Копируем tar.gz в папку /var/calculate/remote/distfiles\
+    echo -e "\e[1;33;4;44mКопируем пакеты платформы в формате tar.gz в папку /var/calculate/remote/distfiles\e[0m"
+    if [ $USERID == 0 ]; then
+    cp $UPLOADDIRPLATFORM/*.tar.gz /var/calculate/remote/distfiles
+    else
+    echo $PASSWORDROOT | sudo -S cp $UPLOADDIRPLATFORM/*.tar.gz /var/calculate/remote/distfiles
+    fi
+    #
+
+    VERPLATFORMSTIRE=`echo $VERPLATFORM | sed -re's/([[:digit:]]+\.[[:digit:]]+.[[:digit:]]+)\.([[:digit:]]+)/\1-\2/'`
+
+	if [ $SERVER_CLIENT = "Клиент" ]; then
+	echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-client-${VERPLATFORM}\e[0m"
+	    if [ $USERID == 0 ]; then
+		emerge =1c-enterprise83-client-${VERPLATFORM}
+		emerge =1c-enterprise83-client-nls-${VERPLATFORM}
+#	    tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-client_${VERPLATFORMSTIRE}_amd64.tar.gz -C /tmp/10
+	    else
+		echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-${VERPLATFORM}
+		echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-client-nls-${VERPLATFORM}
+#		echo $PASSWORDROOT | sudo -S tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-client_${VERPLATFORMSTIRE}_amd64.tar.gz -C /tmp/10
+	    fi
+	fi
+	if [ $SERVER_CLIENT = "Сервер" ]; then
+        #Устанавливаем или нет Postgres
+        echo
+        echo -e "\e[1;31;42mУстановить Postgres?\e[0m"
+        echo
+        PS3='Установить Postgres? :'
+        echo
+        select INSTALLPLATFORMEMERGEPOSTGRES in "Да" "Нет"
+        do
+	    echo
+	    echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORMEMERGEPOSTGRES\e[0m"
+	    echo
+	break
+	done
+		if [[ -z "$INSTALLPLATFORMEMERGEPOSTGRES" ]];then
+	        echo  -e "\e[31mНичего не указано\e[0m"
+		exit 1
+		fi
+		if [ $INSTALLPLATFORMEMERGEPOSTGRES = "Да" ]; then
+		    echo -e "\e[1;34;4mУстанавливаем Postgres\e[0m"
+			if [ $USERID == 0 ]; then
+			    USE="server postgres" emerge =1c-enterprise83-server-${VERPLATFORM}
+			    emerge =1c-enterprise83-server-nls-${VERPLATFORM}
+			else
+			    echo $PASSWORDROOT | sudo -S USE="server postgres" emerge =1c-enterprise83-server-${VERPLATFORM}
+			    echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-server-nls-${VERPLATFORM}
+			fi
+		fi
+		if [ $INSTALLPLATFORMEMERGEPOSTGRES = "Нет" ]; then
+		        echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С , например emerge =\e[0m"
+		fi
+		    #Устанавливаем или нет WEB компоненту 1С Сервер
+		    echo
+		    echo -e "\e[1;31;42mУстановить программу?\e[0m"
+		    echo
+		    PS3='Установить WEB компоненту 1С Сервер? :'
+		    echo
+		    select INSTALLPLATFORMEMERGEWEB1C in "Да" "Нет"
+		    do
+		      echo
+		      echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORMEMERGEWEB1C\e[0m"
+		      echo
+		      break
+		    done
+			if [[ -z "$INSTALLPLATFORMEMERGEWEB1C" ]];then
+		        echo  -e "\e[31mНичего не указано\e[0m"
+			    exit 1
+		        fi
+			if [ $INSTALLPLATFORMEMERGEWEB1C = "Да" ]; then
+			echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-ws-${VERPLATFORM}\e[0m"
+			    if [ $USERID == 0 ]; then
+				USE"server" emerge =1c-enterprise83-ws-${VERPLATFORM}
+				emerge =1c-enterprise83-ws-nls-${VERPLATFORM}
+			    else
+				echo $PASSWORDROOT | sudo -S USE"server" emerge =1c-enterprise83-ws-${VERPLATFORM}
+				echo $PASSWORDROOT | sudo -S emerge =1c-enterprise83-ws-nls-${VERPLATFORM}
+			    fi
+			fi
+		    
+		        if [ $INSTALLPLATFORMEMERGEWEB1C = "Нет" ]; then
+		        echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С , например emerge =1c-enterprise83-ws-$VERPLATFORM\e[0m"
+		        fi
+
+	fi
+    fi
+
+    if [ $INSTALLPLATFORMEMERGE = "Нет" ]; then
+	echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С клиента, например emerge =1c-enterprise83-client-$VERPLATFORM или emerge =1c-enterprise83-server-$VERPLATFORM\e[0m"
+    fi
+
+    if [ $INSTALLPLATFORMEMERGE = "Распаковать_клиента_в_папку" ]; then
+	echo -e "\e[1;33;4;44mРаспаковываем (типа устанавливаем) 1c-enterprise83-client-$VERPLATFORM в папку /opt/1C/v8.3/$VERPLATFORM/$MACHINE_TYPE\e[0m"
+	if [ $USERID == 0 ]; then
+	emerge =dev-utils/google-perftools-2.4
+	emerge deb2targz
+	ln -s /usr/lib/libicui18n.so.64 /usr/lib/libicui18n.so.63
+	ln -s /usr/lib/libicuuc.so.64 /usr/lib/libicuuc.so.63
+	mkdir -p /tmp/$VERPLATFORM
+	mkdir -p /opt/1C/v8.3/$VERPLATFORM/$MACHINE_TYPE
+	tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-common_*.tar.gz -C /tmp/$VERPLATFORM
+	tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-server_*.tar.gz -C /tmp/$VERPLATFORM
+	tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-client_*.tar.gz -C /tmp/$VERPLATFORM
+	cp -R /tmp/$VERPLATFORM/opt/1C/v8.3/$MACHINE_TYPE /opt/1C/v8.3/$VERPLATFORM
+	cp -R /tmp/$VERPLATFORM/usr/share/icons/* /usr/share/icons
+
+	echo "
+	[Desktop Entry]
+	Version=1.0
+	Type=Application
+	Terminal=false
+	Exec=/opt/1C/v8.3/$VERPLATFORM/$MACHINE_TYPE/1cestart
+	Categories=Office;Finance;
+	Name[ru_RU]=1С:Предприятие $VERPLATFORM $MACHINE_TYPE
+	Name=1C:Enterprise $VERPLATFORM $MACHINE_TYPE
+	Icon=1cestart
+	" >> /usr/share/applications/1cestart-$VERPLATFORM-$MACHINE_TYPE.desktop
+
+	echo "
+	[Desktop Entry]
+	Version=1.0
+	Type=Application
+	Terminal=false
+	Exec=/opt/1C/v8.3/$VERPLATFORM/$MACHINE_TYPE/1cv8
+	Categories=Office;Finance;
+	Name[ru_RU]=1С:Предприятие Толстый клиент $VERPLATFORM $MACHINE_TYPE
+	Name=1C:Enterprise - Thick client $VERPLATFORM $MACHINE_TYPE
+	Icon=1cv8
+	" >> /usr/share/applications/1cv8-$VERPLATFORM-$MACHINE_TYPE.desktop
+
+	echo "
+	[Desktop Entry]
+	Version=1.0
+	Type=Application
+	Terminal=false
+	Exec=/opt/1C/v8.3/$VERPLATFORM/$MACHINE_TYPE/1cv8с
+	Categories=Office;Finance;
+	Name[ru_RU]=1С:Предприятие Тонкийй клиент $VERPLATFORM $MACHINE_TYPE
+	Name=1C:Enterprise - Thin client $VERPLATFORM $MACHINE_TYPE
+	Icon=1cv8c
+	" >> /usr/share/applications/1cv8c-$VERPLATFORM-$MACHINE_TYPE.desktop
+
+	rmdir -p /tmp/$VERPLATFORM
+
+        else
+        
+        echo $PASSWORDROOT | sudo -S emerge =dev-utils/google-perftools-2.4
+        echo $PASSWORDROOT | sudo -S emerge deb2targz
+        echo $PASSWORDROOT | sudo -S ln -s /usr/lib/libicui18n.so.64 /usr/lib/libicui18n.so.63
+        echo $PASSWORDROOT | sudo -S ln -s /usr/lib/libicuuc.so.64 /usr/lib/libicuuc.so.63
+        echo $PASSWORDROOT | sudo -S mkdir -p /tmp/$VERPLATFORM
+        echo $PASSWORDROOT | sudo -S mkdir -p /opt/1C/v8.3/$VERPLATFORM/$MACHINE_TYPE
+        echo $PASSWORDROOT | sudo -S tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-common_*.tar.gz -C /tmp/$VERPLATFORM
+        echo $PASSWORDROOT | sudo -S tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-server_*.tar.gz -C /tmp/$VERPLATFORM
+        echo $PASSWORDROOT | sudo -S tar -xvf $UPLOADDIRPLATFORM/1c-enterprise83-client_*.tar.gz -C /tmp/$VERPLATFORM
+        echo $PASSWORDROOT | sudo -S cp -R /tmp/$VERPLATFORM/opt/1C/v8.3/$MACHINE_TYPE /opt/1C/v8.3/$VERPLATFORM
+        echo $PASSWORDROOT | sudo -S cp -R /tmp/$VERPLATFORM/usr/share/icons/* /usr/share/icons
+
+        echo $PASSWORDROOT | sudo -S echo "
+	[Desktop Entry]
+	Version=1.0
+	Type=Application
+	Terminal=false
+	Exec=/opt/1C/v8.3/$VERPLATFORM/$MACHINE_TYPE/1cestart
+	Categories=Office;Finance;
+	Name[ru_RU]=1С:Предприятие $VERPLATFORM $MACHINE_TYPE
+	Name=1C:Enterprise $VERPLATFORM $MACHINE_TYPE
+	Icon=1cestart
+	" >> /usr/share/applications/1cestart-$VERPLATFORM-$MACHINE_TYPE.desktop
+
+        echo $PASSWORDROOT | sudo -S echo "
+	[Desktop Entry]
+	Version=1.0
+	Type=Application
+	Terminal=false
+	Exec=/opt/1C/v8.3/$VERPLATFORM/$MACHINE_TYPE/1cv8
+	Categories=Office;Finance;
+	Name[ru_RU]=1С:Предприятие Толстый клиент $VERPLATFORM $MACHINE_TYPE
+	Name=1C:Enterprise - Thick client $VERPLATFORM $MACHINE_TYPE
+	Icon=1cv8
+	" >> /usr/share/applications/1cv8-$VERPLATFORM-$MACHINE_TYPE.desktop
+
+        echo $PASSWORDROOT | sudo -S echo "
+	[Desktop Entry]
+	Version=1.0
+	Type=Application
+	Terminal=false
+	Exec=/opt/1C/v8.3/$VERPLATFORM/$MACHINE_TYPE/1cv8с
+	Categories=Office;Finance;
+	Name[ru_RU]=1С:Предприятие Тонкийй клиент $VERPLATFORM $MACHINE_TYPE
+	Name=1C:Enterprise - Thin client $VERPLATFORM $MACHINE_TYPE
+	Icon=1cv8c
+	" >> /usr/share/applications/1cv8c-$VERPLATFORM-$MACHINE_TYPE.desktop
+
+        echo $PASSWORDROOT | sudo -S rmdir -p /tmp/$VERPLATFORM
+
+        fi
+        #
+    fi
+
+fi
 #
 
+#Если DEB
+if [ $PAKETMANAGER = DEB ]; then
 
 #Устанавливаем или нет пакеты в систему
 echo
@@ -605,47 +860,189 @@ echo -e "\e[1;31;42mУстановить программу?\e[0m"
 echo
 PS3='Установить программу? '
 echo
-select INSTALLPLATFORM in "Да" "Нет"
+select INSTALLPLATFORMDEB in "Да" "Нет"
 do
   echo
-  echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORM\e[0m"
+  echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORMDEB\e[0m"
   echo
   break
 done
-    if [[ -z "$INSTALLPLATFORM" ]];then
+    if [[ -z "$INSTALLPLATFORMDEB" ]];then
     echo  -e "\e[31mНичего не указано\e[0m"
     exit 1
     fi
 
-    if [ $INSTALLPLATFORM = "Да" ]; then
+    if [ $INSTALLPLATFORMDEB = "Да" ]; then
 	if [ $SERVER_CLIENT = "Клиент" ]; then
-	    echo "1c-enterprise83-client-${VERPLATFORM}"
-	    #echo $PASSWORDROOT | sudo -S emerge 
+	echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-client-${VERPLATFORM}\e[0m"
+	    if [ $USERID == 0 ]; then
+		dpkg -i 1c-enterprise83-common
+		dpkg -i 1c-enterprise83-common-nls
+		dpkg -i 1c-enterprise83-server
+		dpkg -i 1c-enterprise83-server-nls
+		dpkg -i 1c-enterprise83-client
+		dpkg -i 1c-enterprise83-client-nls
+	    else
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common-nls
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server-nls
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-client
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-client-nls
+	    fi
 	fi
 	if [ $SERVER_CLIENT = "Сервер" ]; then
-	    echo "1c-enterprise83-server-${VERPLATFORM}"
-	    #echo $PASSWORDROOT | sudo -S emerge 
+	echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-server-${VERPLATFORM}\e[0m"
+	    if [ $USERID == 0 ]; then
+		dpkg -i 1c-enterprise83-common_$VERPLATFORM.$PAKETNAME
+		dpkg -i 1c-enterprise83-common-nls_$VERPLATFORM.$PAKETNAME
+		dpkg -i 1c-enterprise83-server_$VERPLATFORM.$PAKETNAME
+		dpkg -i 1c-enterprise83-server-nls_${VERPLATFORM}_
+	    else
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common_$VERPLATFORM.$PAKETNAME
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-common-nls_$VERPLATFORM.$PAKETNAME
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server_$VERPLATFORM.$PAKETNAME
+		echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-server-nls_${VERPLATFORM}_
+	    fi
+	    
+		    #Устанавливаем или нет WEB компоненту 1С Сервер
+		    echo
+		    echo -e "\e[1;31;42mУстановить программу?\e[0m"
+		    echo
+		    PS3='Установить WEB компоненту 1С Сервер? :'
+		    echo
+		    select INSTALLPLATFORMDEBWEB1C in "Да" "Нет"
+		    do
+		      echo
+		      echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORMDEBWEB1C\e[0m"
+		      echo
+		      break
+		    done
+			if [[ -z "$INSTALLPLATFORMDEBWEB1C" ]];then
+		        echo  -e "\e[31mНичего не указано\e[0m"
+			    exit 1
+		        fi
+			if [ $INSTALLPLATFORMDEBWEB1C = "Да" ]; then
+			echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-ws-${VERPLATFORM}\e[0m"
+			    if [ $USERID == 0 ]; then
+				dpkg -i 1c-enterprise83-ws
+				dpkg -i 1c-enterprise83-ws-nls
+			    else
+				echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-ws
+				echo $PASSWORDROOT | sudo -S dpkg -i 1c-enterprise83-ws-nls
+			    fi
+			fi
+		    
+		        if [ $INSTALLPLATFORMDEBWEB1C = "Нет" ]; then
+		        echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С клиента, например dpkg -i 1c-enterprise83-ws-$VERPLATFORM\e[0m"
+		        fi
+
 	fi
+
     fi
 
     if [ $INSTALLPLATFORM = "Нет" ]; then
-    echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С клиента, например emerge =1c-enterprise83-client-$VERPLATFORM или emerge =1c-enterprise83-server-$VERPLATFORM\e[0m"
+    echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С клиента, например dpkg -i 1c-enterprise83-client-$VERPLATFORM или dpkg -i 1c-enterprise83-server-$VERPLATFORM\e[0m"
     fi
-fi
-#
 
-#Если дебиан
-if [ $PAKETMANAGER = DEB ]; then
-
-echo "Это Debian"
 
 fi
 
-#Если fedora
+#Если RPM
 if [ $PAKETMANAGER = RPM ]; then
 
-echo "Это Fedora"
+#Устанавливаем или нет пакеты в систему
+echo
+echo -e "\e[1;31;42mУстановить программу?\e[0m"
+echo
+PS3='Установить программу? '
+echo
+select INSTALLPLATFORMRPM in "Да" "Нет"
+do
+  echo
+  echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORMRPM\e[0m"
+  echo
+  break
+done
+    if [[ -z "$INSTALLPLATFORMRPM" ]];then
+    echo  -e "\e[31mНичего не указано\e[0m"
+    exit 1
+    fi
 
+    if [ $INSTALLPLATFORMRPM = "Да" ]; then
+	if [ $SERVER_CLIENT = "Клиент" ]; then
+	echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-client-${VERPLATFORM}\e[0m"
+	    if [ $USERID == 0 ]; then
+		yum -y 1c-enterprise83-common
+		yum -y 1c-enterprise83-common-nls
+		yum -y 1c-enterprise83-server
+		yum -y 1c-enterprise83-server-nls
+		yum -y 1c-enterprise83-client
+		yum -y 1c-enterprise83-client-nls
+	    else
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common-nls
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server-nls
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-client
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-client-nls
+	    fi
+	fi
+	if [ $SERVER_CLIENT = "Сервер" ]; then
+	echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-server-${VERPLATFORM}\e[0m"
+	    if [ $USERID == 0 ]; then
+		yum -y 1c-enterprise83-common
+		yum -y 1c-enterprise83-common-nls
+		yum -y 1c-enterprise83-server
+		yum -y 1c-enterprise83-server-nls
+	    else
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-common-nls
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server
+		echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-server-nls
+	    fi
+	    
+		    #Устанавливаем или нет WEB компоненту 1С Сервер
+		    echo
+		    echo -e "\e[1;31;42mУстановить WEB компоненту 1С Сервер?\e[0m"
+		    echo
+		    PS3='Установить WEB компоненту 1С Сервер? :'
+		    echo
+		    select INSTALLPLATFORMRPMWEB1C in "Да" "Нет"
+		    do
+		      echo
+		      echo -e "\e[1;34;4mВы выбрали $INSTALLPLATFORMRPMWEB1C\e[0m"
+		      echo
+		      break
+		    done
+			if [[ -z "$INSTALLPLATFORMRPMWEB1C" ]];then
+		        echo  -e "\e[31mНичего не указано\e[0m"
+			    exit 1
+		        fi
+			#
+			if [ $INSTALLPLATFORMRPMWEB1C = "Да" ]; then
+			echo -e "\e[1;34;4mУстанавливаем 1c-enterprise83-ws-${VERPLATFORM}\e[0m"
+			    if [ $USERID == 0 ]; then
+				yum -y 1c-enterprise83-ws
+				yum -y 1c-enterprise83-ws-nls
+			    else
+				echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-ws
+				echo $PASSWORDROOT | sudo -S yum -y 1c-enterprise83-ws-nls
+			    fi
+			fi
+			#
+		        if [ $INSTALLPLATFORMRPMBWEB1C = "Нет" ]; then
+		        echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С клиента, например yum -y 1c-enterprise83-ws-$VERPLATFORM\e[0m"
+		        fi
+			#
+	fi
+	#
+    fi
+    #
+    if [ $INSTALLPLATFORMRPM = "Нет" ]; then
+    echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С клиента, например yum -y 1c-enterprise83-client-$VERPLATFORM или yum -y 1c-enterprise83-server-$VERPLATFORM\e[0m"
+    fi
+    #
 fi
 #
 
@@ -699,18 +1096,49 @@ if [ $DELFILESVIBORPLATFORM = "Нет" ]; then
     fi
 
     if [ $COPYFILESVIBORPLATFORM = "Да" ]; then
-        mkdir ~/1C_arhiv
-        cp -R $UPLOADDIRPLATFORM ~/1C_arhiv/Platform-$VERPLATFORM
+        read -i "~/1C_arhiv/Platform-$VERPLATFORM" -p "Введите путь для сохранения или оставте текущий: " -e COPYPATHPLATFORM
+#	echo
+#	echo -n "Введите путь для сохранения нажмите [ENTER]: "
+#	read USERNAME
+        mkdir $COPYPATHPLATFORM
+        cp -R $UPLOADDIRPLATFORM $COPYPATHPLATFORM
         rm -R $UPLOADDIRPLATFORM
-        echo "Все скачанные файлы скопированы в папку пользователя в каталог /1C_arhiv/Platform-$VERPLATFORM"
+        echo "Все скачанные файлы скопированы в папку пользователя в каталог $COPYPATHPLATFORM"
+
         exit 0
     fi
 
-    if [ $COPYFILESVIBORCONF = "Нет" ]; then
+    if [ $COPYFILESVIBORPLATFORM = "Нет" ]; then
         echo "Все скачанные файлы остались в каталоге $UPLOADDIRPLATFORM"
         exit 0
     fi
 
+fi
+fi
+
+if [ $INSTALLUPDATEDELPLATFORM = "Удаление" ]; then
+PLATFORMDELPATH=/opt/1C/v8.3
+echo "Список платформ 1С"
+DELETEVERPLATFORMLS=`ls $PLATFORMDELPATH`
+echo $DELETEVERPLATFORMLS
+echo
+read -i "" -p "Введите номер платформы для удаления: " -e DELETEVERPLATFORM
+echo
+if [[ -z "$DELETEVERPLATFORM" ]];then
+    echo
+    echo "Ничего не выбрано"
+    echo
+    exit 1
+fi
+echo
+echo "Вы выбрали $DELETEVERPLATFORM"
+echo
+    rm -R /opt/1C/v8.3/$DELETEVERPLATFORM/$MACHINE_TYPE
+    rm -R /usr/share/applications/1cestart-$DELETEVERPLATFORM-$MACHINE_TYPE.desktop
+    rm -R /usr/share/applications/1cv8-$DELETEVERPLATFORM-$MACHINE_TYPE.desktop
+    rm -R /usr/share/applications/1cv8c-$DELETEVERPLATFORM-$MACHINE_TYPE.desktop
+
+echo "Платформа $DELETEVERPLATFORM $MACHINE_TYPE УДАЛЕНА"
 fi
 
 fi
@@ -1044,16 +1472,16 @@ echo
 echo -e "\e[1;33;4;44mРаспаковываем exe файл\e[0m"
 echo
 cd $UPLOADDIRCONF
-unrar e $CONF_$VERCONF4.exe
-rm $CONF_$VERCONF4.exe
+unrar e $UPLOADDIRCONF/${CONF}_${VERCONF4}.exe
+rm $UPLOADDIRCONF/${CONF}_${VERCONF4}.exe
 
 #Запускаем установщик
 echo
 echo -e "\e[1;33;4;44mЗапускаем установщик\e[0m"
 echo
-
-chmod 777 setup
-sh setup
+cd $UPLOADDIRCONF
+chmod 777 $UPLOADDIRCONF/setup
+sh $UPLOADDIRCONF/setup
 
 #Удалить файлы или нет
 echo
