@@ -70,21 +70,21 @@ CLIENTLINK=$(curl -s -G \
     --data-urlencode "nick=Trade110" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=Trade\\$VER1\\Trade_$VER2.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 CLIENTLINK=$(curl -s -G \
     -b /tmp/cookies.txt \
     --data-urlencode "nick=Trade110" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=Trade\\$VER1\\Trade_$VER3.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 CLIENTLINK=$(curl -s -G \
     -b /tmp/cookies.txt \
     --data-urlencode "nick=Trade110" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=Trade\\$VER1\\Trade_$VER4.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив с зеркала 2)')
+    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 
 mkdir -p dist

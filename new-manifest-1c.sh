@@ -15,7 +15,7 @@ PATH_THIN_CLIENT_NLS=-thin-client-nls
 PATH_WS=-ws
 PATH_WS_NLS=-ws-nls
 
-ebuildd=/usr/lib/python-exec/python3.6/ebuild
+ebuildd=/usr/lib/python-exec/python3.9/ebuild
 
 cd $PATH
 
