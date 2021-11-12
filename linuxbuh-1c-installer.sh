@@ -599,12 +599,12 @@ echo -e "\e[1;33;4;44mУдаляем deb пакеты\e[0m"
 rm $UPLOADDIRPLATFORM/*.deb
 #
 
-#Копируем tar.gz в папку /var/calculate/remote/distfiles\
-#echo -e "\e[1;33;4;44mКопируем пакеты платформы в формате tar.gz в папку /var/calculate/remote/distfiles\e[0m"
+#Копируем tar.gz в папку /var/calculate/distfiles\
+#echo -e "\e[1;33;4;44mКопируем пакеты платформы в формате tar.gz в папку /var/calculate/distfiles\e[0m"
 #if [ $USERID == 0 ]; then
-#cp $UPLOADDIRPLATFORM/*.tar.gz /var/calculate/remote/distfiles
+#cp $UPLOADDIRPLATFORM/*.tar.gz /var/calculate/distfiles
 #else
-#echo $PASSWORDROOT | sudo -S cp $UPLOADDIRPLATFORM/*.tar.gz /var/calculate/remote/distfiles
+#echo $PASSWORDROOT | sudo -S cp $UPLOADDIRPLATFORM/*.tar.gz /var/calculate/distfiles
 #fi
 #
 

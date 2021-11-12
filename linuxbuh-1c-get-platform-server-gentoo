@@ -113,7 +113,7 @@ function version_platform { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\${PAKETNAME}_${VERPLATFORM1}.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
         else
 
@@ -123,7 +123,7 @@ function version_platform { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\${PAKET}_${VERPLATFORM1}.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
         fi
     #Сравнение версий, если версия ниже 8.3.12.1469 качем отсюда
     else
@@ -135,7 +135,7 @@ function version_platform { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\$PAKETNAME.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
         else
 
@@ -144,7 +144,7 @@ function version_platform { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\$PAKET.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
         fi
 
@@ -192,12 +192,12 @@ deb2targz /tmp/platform1c/*.deb
 echo "Удаляем deb пакеты"
 rm /tmp/platform1c/*.deb
 
-echo "Перемещаем tar.gz в папку /var/calculate/remote/distfiles"
-mv /tmp/platform1c/*.tar.gz /var/calculate/remote/distfiles
+echo "Перемещаем tar.gz в папку /var/calculate/distfiles"
+mv /tmp/platform1c/*.tar.gz /var/calculate/distfiles
 
 mv /tmp/platform1c/license-tools /tmp/platform1c/license-tools-$VER
 cd /tmp/platform1c
-tar -cvzf /var/calculate/remote/distfiles/license-tools-${VER}.tar.gz ./license-tools-$VER
+tar -cvzf /var/calculate/distfiles/license-tools-${VER}.tar.gz ./license-tools-$VER
 
 #удаляем папку
 rm -Rf /tmp/platform1c

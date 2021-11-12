@@ -79,7 +79,7 @@ CLIENTLINK=$(curl -s -G \
     --data-urlencode "nick=Trade110" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=Trade\\$VER1\\Trade_$VER4.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 else
 
@@ -88,7 +88,7 @@ CLIENTLINK=$(curl -s -G \
     --data-urlencode "nick=Trade110" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=Trade\\$VER1\\setup1c.exe" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 fi
 

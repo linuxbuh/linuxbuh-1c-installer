@@ -228,14 +228,14 @@ if [ $SERVER_CLIENT = "Клиент" ]; then
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VER" \
 		    --data-urlencode "path=Platform\\$VER1\\client_$VER1.$PAKETNAME.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 		SERVERLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VER" \
 		    --data-urlencode "path=Platform\\$VER1\\${PAKETNAME}_${VER1}.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
         else
 
@@ -245,14 +245,14 @@ if [ $SERVER_CLIENT = "Клиент" ]; then
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VER" \
 		    --data-urlencode "path=Platform\\$VER1\\client_$VER1.$PAKETNAME.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 		SERVERLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VER" \
 		    --data-urlencode "path=Platform\\$VER1\\{PAKET}_${VER1}.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
         fi
     #Сравнение версий, если версия ниже 8.3.12.1469 качем отсюда
     else
@@ -264,14 +264,14 @@ if [ $SERVER_CLIENT = "Клиент" ]; then
 	    --data-urlencode "nick=Platform83" \
 	    --data-urlencode "ver=$VER" \
 	    --data-urlencode "path=Platform\\$VER1\\client.$PAKETNAME.tar.gz" \
-	    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+	    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 		SERVERLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VER" \
 		    --data-urlencode "path=Platform\\$VER1\\$PAKETNAME.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
         else
 
@@ -280,14 +280,14 @@ if [ $SERVER_CLIENT = "Клиент" ]; then
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VER" \
 		    --data-urlencode "path=Platform\\$VER1\\client.$PAKETNAME.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 		SERVERLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VER" \
 		    --data-urlencode "path=Platform\\$VER1\\$PAKET.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
         fi
 
@@ -308,7 +308,7 @@ if [ $SERVER_CLIENT = "Сервер" ]; then
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VER" \
 		    --data-urlencode "path=Platform\\$VER1\\${PAKETNAME}_${VER1}.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
         else
 
@@ -318,7 +318,7 @@ if [ $SERVER_CLIENT = "Сервер" ]; then
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VER" \
 		    --data-urlencode "path=Platform\\$VER1\\${PAKET}_${VER1}.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
         fi
     #Сравнение версий, если версия ниже 8.3.12.1469 качем отсюда
     else
@@ -330,7 +330,7 @@ if [ $SERVER_CLIENT = "Сервер" ]; then
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VER" \
 		    --data-urlencode "path=Platform\\$VER1\\$PAKETNAME.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
         else
 
@@ -339,7 +339,7 @@ if [ $SERVER_CLIENT = "Сервер" ]; then
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VER" \
 		    --data-urlencode "path=Platform\\$VER1\\$PAKET.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
         fi
 
@@ -444,9 +444,9 @@ echo -e "\e[1;33;4;44mУдаляем deb пакеты\e[0m"
 rm /tmp/dist1c/*.deb
 #
 
-#Перемещаем tar.gz в папку /var/calculate/remote/distfiles\
-echo -e "\e[1;33;4;44mПеремещаем tar.gz в папку /var/calculate/remote/distfiles\e[0m"
-mv /tmp/dist1c/*.tar.gz /var/calculate/remote/distfiles
+#Перемещаем tar.gz в папку /var/calculate/distfiles\
+echo -e "\e[1;33;4;44mПеремещаем tar.gz в папку /var/calculate/distfiles\e[0m"
+mv /tmp/dist1c/*.tar.gz /var/calculate/distfiles
 #
 echo -e "\e[1;33;4;44mТеперь выполните комманду по установке 1С клиента, например emerge 1c-enterprise83-client-$VER\e[0m"
 

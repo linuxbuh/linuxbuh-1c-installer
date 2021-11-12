@@ -112,14 +112,14 @@ function version_platform { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\client_$VERPLATFORM1.$PAKETNAME64.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 		SERVERLINK64=$(curl -s -G \
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\${PAKETNAME64}_${VERPLATFORM1}.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 #	fi
 
 
@@ -130,14 +130,14 @@ function version_platform { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\client_$VERPLATFORM1.$PAKETNAME32.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 		SERVERLINK32=$(curl -s -G \
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\${PAKET}_${VERPLATFORM1}.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 #        fi
     #Сравнение версий, если версия ниже 8.3.12.1469 качем отсюда
     else
@@ -149,14 +149,14 @@ function version_platform { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1
 	    --data-urlencode "nick=Platform83" \
 	    --data-urlencode "ver=$VERPLATFORM" \
 	    --data-urlencode "path=Platform\\$VERPLATFORM1\\client.$PAKETNAME64.tar.gz" \
-	    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+	    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 		SERVERLINK64=$(curl -s -G \
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\$PAKETNAME64.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 #	fi
 	
 #        if [ ${OSBIT} == '32' ]; then
@@ -166,14 +166,14 @@ function version_platform { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\client.$PAKETNAME32.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 		SERVERLINK32=$(curl -s -G \
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\$PAKET.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 #        fi
 
@@ -237,14 +237,14 @@ deb2targz /tmp/platform1c/*.deb
 echo "Удаляем deb пакеты версии $VER "
 rm /tmp/platform1c/*.deb
 
-echo "Перемещаем tar.gz версии $VER в папку /var/calculate/remote/distfiles"
-mv /tmp/platform1c/*.tar.gz /var/calculate/remote/distfiles
+echo "Перемещаем tar.gz версии $VER в папку /var/calculate/distfiles"
+mv /tmp/platform1c/*.tar.gz /var/calculate/distfiles
 
 if [ $(version_platform $VERPLATFORM) -ge $(version_platform "8.3.14.1565") ]; then
 echo "Запаковываем license-tools-$VER в tar.gz. Установить license-tools можно коммандой emerge app-office/1c-license-tools "
 mv /tmp/platform1c/license-tools /tmp/platform1c/1c-license-tools-$VER
 cd /tmp/platform1c
-tar -cvzf /var/calculate/remote/distfiles/1c-license-tools-${VER}.tar.gz ./1c-license-tools-$VER
+tar -cvzf /var/calculate/distfiles/1c-license-tools-${VER}.tar.gz ./1c-license-tools-$VER
 fi
 
 #удаляем папку

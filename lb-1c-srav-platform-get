@@ -68,14 +68,14 @@ VERPLATFORM2=${VERPLATFORM//./}
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\client_$VERPLATFORM1.deb64.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 		    SERVERLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\deb64_${VERPLATFORM1}.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
     else
 		    CLIENTLINK=$(curl -s -G \
@@ -83,14 +83,14 @@ VERPLATFORM2=${VERPLATFORM//./}
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\client_$VERPLATFORM1.deb64.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 		    SERVERLINK=$(curl -s -G \
 		    -b /tmp/cookies.txt \
 		    --data-urlencode "nick=Platform83" \
 		    --data-urlencode "ver=$VERPLATFORM" \
 		    --data-urlencode "path=Platform\\$VERPLATFORM1\\deb64_${VERPLATFORM1}.tar.gz" \
-		    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+		    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
     fi
 
@@ -117,8 +117,8 @@ deb2targz $UPLOADDIRPLATFORM/*.deb
 echo "Удаляем deb пакеты"
 rm $UPLOADDIRPLATFORM/*.deb
 
-echo "Перемещаем tar.gz в папку /var/calculate/remote/distfiles"
-mv $UPLOADDIRPLATFORM/*.tar.gz /var/calculate/remote/distfiles
+echo "Перемещаем tar.gz в папку /var/calculate/distfiles"
+mv $UPLOADDIRPLATFORM/*.tar.gz /var/calculate/distfiles
 
 #удаляем папку
 #rm -R $UPLOADDIRPLATFORM

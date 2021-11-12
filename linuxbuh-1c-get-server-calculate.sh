@@ -84,7 +84,7 @@ SERVERLINK=$(curl -s -G \
     --data-urlencode "nick=Platform83" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=Platform\\$VER1\\deb64_$VER1.tar.gz" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 else
 
@@ -94,7 +94,7 @@ SERVERLINK=$(curl -s -G \
     --data-urlencode "nick=Platform83" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=Platform\\$VER1\\deb_$VER1.tar.gz" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 fi
 
@@ -107,7 +107,7 @@ SERVERLINK=$(curl -s -G \
     --data-urlencode "nick=Platform83" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=Platform\\$VER1\\deb64.tar.gz" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 else
 
@@ -116,7 +116,7 @@ SERVERLINK=$(curl -s -G \
     --data-urlencode "nick=Platform83" \
     --data-urlencode "ver=$VER" \
     --data-urlencode "path=Platform\\$VER1\\deb.tar.gz" \
-    https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+    https://releases.1c.ru/version_file | grep -m 1 -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
 
 fi
 
@@ -163,8 +163,8 @@ deb2targz /tmp/dist1c/*.deb
 echo "Удаляем deb пакеты"
 rm /tmp/dist1c/*.deb
 
-echo "Перемещаем tar.gz в папку /var/calculate/remote/distfiles"
-mv /tmp/dist1c/*.tar.gz /var/calculate/remote/distfiles
+echo "Перемещаем tar.gz в папку /var/calculate/distfiles"
+mv /tmp/dist1c/*.tar.gz /var/calculate/distfiles
 
 #удаляем папку
 #rm -R /tmp/dist1c
