@@ -401,6 +401,20 @@ function version_platform { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1
 #Если качаем клиент
 if [ $SERVER_CLIENT = "Клиент" ]; then
 
+    if [ ${OSBIT} == '64' ]; then
+    #Сравнение версий, если версия 8.3.20.* то качаем
+    if [ $(version_platform $VERPLATFORM) -ge $(version_platform "8.3.20.1549") ]; then
+
+		SERVERLINK=$(curl -s -G \
+		    -b /tmp/cookies.txt \
+		    --data-urlencode "nick=Platform83" \
+		    --data-urlencode "ver=$VERPLATFORM" \
+		    --data-urlencode "path=Platform\\$VERPLATFORM1\\${PAKETNAME}_${VERPLATFORM1}.tar.gz" \
+		    https://releases.1c.ru/version_file | grep -m 1 -Po '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+    fi
+    fi
+
+    
     #Сравнение версий, если версия ниже 8.3.12.1469 то качаем после else
     if [ $(version_platform $VERPLATFORM) -ge $(version_platform "8.3.12.1469") ]; then
 
@@ -480,6 +494,21 @@ if [ $SERVER_CLIENT = "Клиент" ]; then
 fi
 
 if [ $SERVER_CLIENT = "Сервер" ]; then
+
+
+	#если x86_64
+	if [ ${OSBIT} == '64' ]; then
+    #Сравнение версий, если версия 8.3.20.* то качаем
+    if [ $(version_platform $VERPLATFORM) -ge $(version_platform "8.3.20.1549") ]; then
+
+		SERVERLINK=$(curl -s -G \
+		    -b /tmp/cookies.txt \
+		    --data-urlencode "nick=Platform83" \
+		    --data-urlencode "ver=8.3.20.1549" \
+		    --data-urlencode "path=Platform\\8_3_20_1549\\server64_8_3_20_1549.tar.gz" \
+		    https://releases.1c.ru/version_file | grep -m 1 -Po '(?<=a href=")[^"]+(?=">Скачать дистрибутив)')
+    fi
+    fi
 
     #Сравнение версий, если версия ниже 8.3.12.1469 то качаем после else
     if [ $(version_platform $VERPLATFORM) -ge $(version_platform "8.3.12.1469") ]; then
